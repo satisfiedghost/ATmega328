@@ -1,6 +1,6 @@
-typedef enum pintype{INPUT=0, OUTPUT};
-typedef enum pinstate{LOW=0, HIGH};
-typedef enum port{A=0, B, C, D};
+typedef enum pintype{INPUT=0, OUTPUT}pintype;
+typedef enum pinstate{LOW=0, HIGH}pinstate;
+typedef enum port{B=0, C, D}port;
 
 void set_pin_type(port p, uint8_t pin, pintype t);
 

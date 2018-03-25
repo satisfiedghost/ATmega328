@@ -1,28 +1,48 @@
 #include <avr/io.h>
 #include "../include/gpio.h"
 
+//Sets the pin type, INPUT or OUTPUT
+//Note when setting to output, if the previous state was INPUT with PULLUP 
+//an intermediate step of ({DDRxn, PORTxn} = 0b00) is required, as per the ATmega328p datasheet.
+//Hence our clearning DDRxn before setting it again if t == OUTPUT.
+//
+//OUTPUT is LOW by default
+//Pullups are on by default when pinmode is INPUT
 void set_pin_type(port p, uint8_t pin, pintype t){
-  uint8_t ddrVal = (INPUT == t) ? 0 : 1;
-  uint8_t portVal = (INPUT == t) ? 1 : 0; 
+  uint8_t setting = 1 << pin;
 
-  ddrVal = ddrVal << pin;
-  portVal = portVal << pin;
-
-  //Output LOW by default. 
-  //Pullups on by default.
   if (OUTPUT == t){
     switch (p){
       case B:
-        DDRB |=  ddrVal;
-        PORTB |= portVal;
+        DDRB &= ~setting; 
+        PORTB &= ~setting;
+        DDRB |= setting;
         break;
       case C:
-        DDRC |= ddrVal;
-        PORTC |= portVal;
+        DDRC &= ~setting;
+        PORTC &= ~setting;
+        DDRC |= setting;
         break;
       case D:
-        DDRD |= ddrVal;
-        PORTD |= portVal;
+        DDRB &= ~setting;
+        PORTD &= ~setting;
+        DDRD |= setting;
+        break;
+    }
+  }
+  else{
+    switch (p){
+      case B:
+        DDRB &= ~setting;
+        PORTB |= setting;
+        break;
+      case C:
+        DDRC &= ~setting;
+        PORTC |= setting;
+        break;
+      case D:
+        DDRD &= ~setting;
+        PORTD |= setting;
         break;
     }
   }

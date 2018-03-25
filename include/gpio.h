@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 typedef enum pintype{INPUT=0, OUTPUT}pintype;
 typedef enum pinstate{LOW=0, HIGH}pinstate;
 typedef enum port{B=0, C, D}port;

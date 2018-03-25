@@ -1,5 +1,5 @@
 #include <avr/io.h>
-#include "gpio.h"
+#include "../include/gpio.h"
 
 void set_pin_type(port p, uint8_t pin, pintype t){
   uint8_t ddrVal = (INPUT == t) ? 0 : 1;
@@ -10,19 +10,21 @@ void set_pin_type(port p, uint8_t pin, pintype t){
 
   //Output LOW by default. 
   //Pullups on by default.
-  switch (p){
-    case B:
-      DDRB |=  ddrVal;
-      PORTB |= portVal;
-      break;
-    case C:
-      DDRC |= ddrVal;
-      PORTC |= portVal;
-      break;
-    case D:
-      DDRD |= ddrVal;
-      PORTD |= portVal;
-      break;
+  if (OUTPUT == t){
+    switch (p){
+      case B:
+        DDRB |=  ddrVal;
+        PORTB |= portVal;
+        break;
+      case C:
+        DDRC |= ddrVal;
+        PORTC |= portVal;
+        break;
+      case D:
+        DDRD |= ddrVal;
+        PORTD |= portVal;
+        break;
+    }
   }
 }
 
@@ -36,22 +38,38 @@ uint8_t read_pin(port p, uint8_t pin){
       return PINC & pinMask;
     case D:
       return PIND & pinMask;
+    default:
+      return 0;
   }
 }
 
 void write_pin(port p, uint8_t pin, pinstate s){
-  uint8_t output = (LOW == s) ? 0 : 1;
-  output = output << pin;
+  uint8_t output = 1 << pin;
 
-  switch (p){
-    case B: 
-      PORTB |= output;
-      return;
-    case C: 
-      PORTC |= output;
-      return;
-    case D:
-      PORTD |= output;
-      return;
-  } 
+  if (HIGH == s){
+    switch (p){
+      case B: 
+        PORTB |= output;
+        return;
+      case C: 
+        PORTC |= output;
+        return;
+      case D:
+        PORTD |= output;
+        return;
+    } 
+  }
+  else{
+    switch (p){
+      case B: 
+        PORTB &= ~output;
+        return;
+      case C: 
+        PORTC &= ~output;
+        return;
+      case D:
+        PORTD &= ~output;
+        return;
+    }
+  }
 }

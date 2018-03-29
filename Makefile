@@ -18,9 +18,9 @@ hex: $(BUILD)
 
 gpio: gpio/gpio.c test/gpiotest.c
 
-gpiotest: gpio/gpio.c test/gpiotest.c
-	$(CC) $(CFLAGS) -Os -mmcu=$(BOARD) -o gpiotest.elf gpio/gpio.c test/gpiotest.c
-	avr-objcopy -j .text -j .data -O ihex gpiotest.elf gpiotest.hex 
+gpiotest: src/gpio.c test/gpiotest.c
+	$(CC) $(CFLAGS) -Os -mmcu=$(BOARD) -o gpiotest.elf src/gpio.c test/gpiotest.c
+	avr-objcopy -R .eeprom -O ihex gpiotest.elf gpiotest.hex 
 	sudo avrdude -p atmega328p -c dragon_isp -P usb -e -U flash:w:gpiotest.hex
 
 clean: 
